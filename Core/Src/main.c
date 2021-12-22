@@ -21,6 +21,9 @@
 #include "main.h"
 #include "spi.h"
 #include "gpio.h"
+#include "W25QXX.h"
+#include <stdio.h>
+#include <string.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -44,7 +47,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t wData[0x100];
+uint8_t rData[0x100];
+uint32_t i;
+uint8_t ID[2];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,9 +99,36 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  BSP_W25Qx_Init();
+  BSP_W25Qx_Read_ID(ID);
+
   while (1)
   {
     /* USER CODE END WHILE */
+
+	  if(BSP_W25Qx_Erase_Block(0) != W25Qx_OK)
+      Error_Handler();
+  
+    // set buffer
+	  for(i =0;i<0x100;i ++)
+	  {
+	    wData[i] = i;
+	    rData[i] = 0;
+	  } 
+
+    //* write test
+	  if(BSP_W25Qx_Write(wData, 0x00, 0x100) != W25Qx_OK)
+      Error_Handler();
+
+    //* read test
+	  if(BSP_W25Qx_Read(rData, 0x00, 0x100) != W25Qx_OK)
+      Error_Handler();
+
+	  //* check data  
+	  if(memcmp(wData, rData, 0x100) != 0)
+      Error_Handler();
+
+    HAL_Delay(5000);
 
     /* USER CODE BEGIN 3 */
   }
