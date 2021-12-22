@@ -1,0 +1,8 @@
+
+# 忽略專案目錄下 STM32IDE 所產出的 Debug 資料夾 
+/Debug
+ 
+
+# 忽略 TouchGFX 使用 Visual studio 模擬後, 所產出的內容 
+/TouchGFX/build
+/TouchGFX/simulator/msvs/.vs
