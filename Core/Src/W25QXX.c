@@ -67,7 +67,7 @@ static uint8_t BSP_W25Qx_GetStatus(void)
 	/* Send the read status command */
 	HAL_SPI_Transmit(&hspix, cmd, 1, W25Qx_TIMEOUT_VALUE);	
 	/* Reception of the data */
-	HAL_SPI_Receive(&hspix,&status, 1, W25Qx_TIMEOUT_VALUE);
+	HAL_SPI_Receive(&hspix, &status, 1, W25Qx_TIMEOUT_VALUE);
 	W25Qx_Disable();
 	
 	/* Check the value of the register */
@@ -281,7 +281,7 @@ uint8_t BSP_W25Qx_Erase_Chip(void)
 {
 	uint8_t cmd[4];
 	uint32_t tickstart = HAL_GetTick();
-	cmd[0] = SECTOR_ERASE_CMD;
+	cmd[0] = CHIP_ERASE_CMD;
 	
 	/* Enable write operations */
 	BSP_W25Qx_WriteEnable();

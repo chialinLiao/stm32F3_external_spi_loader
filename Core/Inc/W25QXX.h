@@ -43,20 +43,15 @@
   * @}
   */ 
 
-/** @defgroup W25Q80_Exported_Constants
-  * @{
-  */
-#define MEMORY_FLASH_SIZE   W25Q80_FLASH_SIZE            
-#define MEMORY_SECTOR_SIZE  W25Q80_SECTOR_SIZE                
-#define MEMORY_PAGE_SIZE    W25Q80_PAGE_SIZE 
-
 /** 
   * @brief  W25Q80 Configuration  
   */  
-#define W25Q80_FLASH_SIZE                  0x100000  /* 8 MBits => 1MBytes */
-#define W25Q80_SECTOR_SIZE                 0x10000   /* 256 sectors of 64KBytes */
-#define W25Q80_SUBSECTOR_SIZE              0x1000    /* 4096 subsectors of 4kBytes */
-#define W25Q80_PAGE_SIZE                   0x100     /* 4096 pages of 256 bytes */
+#define MEMORY_FLASH_SIZE                  (0x400000 / 8)  /* 4 MBits => 512KB */
+#define MEMORY_BLOCK_SIZE                  0x10000   /* 64KBytes */
+#define MEMORY_SECTOR_SIZE                 0x1000    /* 4kBytes */
+#define MEMORY_PAGE_SIZE                   0x100     /* 256 bytes */
+
+#define W25Q80_PAGE_SIZE  MEMORY_PAGE_SIZE
 
 #define W25Q80_DUMMY_CYCLES_READ           4
 #define W25Q80_DUMMY_CYCLES_READ_QUAD      10

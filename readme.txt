@@ -1,1 +1,0 @@
-cmd.exe /C copy/Y  "${BuildArtifactFileBaseName}.elf" "..\W25Q80_CUSTOMER_STMF302R8.stldr"

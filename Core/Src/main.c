@@ -22,6 +22,7 @@
 #include "spi.h"
 #include "gpio.h"
 #include "W25QXX.h"
+#include "Loader_Src.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -32,7 +33,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+#define SECTORS_COUNT  128 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -47,9 +48,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t wData[0x100];
-uint8_t rData[0x100];
-uint32_t i;
+#define BUFFER_SIZE  8
+uint8_t wData[BUFFER_SIZE];
+uint8_t rData[BUFFER_SIZE];
+uint32_t i, j;
 uint8_t ID[2];
 /* USER CODE END PV */
 
@@ -69,70 +71,62 @@ void SystemClock_Config(void);
   * @retval int
   */
 int main(void)
-{
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_SPI3_Init();
-  /* USER CODE BEGIN 2 */
-
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  BSP_W25Qx_Init();
+{ 
+  Init();
   BSP_W25Qx_Read_ID(ID);
 
-  while (1)
-  {
-    /* USER CODE END WHILE */
-
-	  if(BSP_W25Qx_Erase_Block(0) != W25Qx_OK)
-      Error_Handler();
+  //* erase flash
+  MassErase();
   
-    // set buffer
-	  for(i =0;i<0x100;i ++)
-	  {
-	    wData[i] = i;
-	    rData[i] = 0;
-	  } 
-
-    //* write test
-	  if(BSP_W25Qx_Write(wData, 0x00, 0x100) != W25Qx_OK)
-      Error_Handler();
+  //* check erase is work or not
+  for (i=0; i < SECTORS_COUNT; i++) 
+  {
+    //* init variable
+    for (j=0; j<BUFFER_SIZE; j++) 
+      rData[j] = 0;
 
     //* read test
-	  if(BSP_W25Qx_Read(rData, 0x00, 0x100) != W25Qx_OK)
+	  if (Read((i*MEMORY_SECTOR_SIZE), BUFFER_SIZE, &rData[0]) != LOADER_OK) 
+    {
       Error_Handler();
-
-	  //* check data  
-	  if(memcmp(wData, rData, 0x100) != 0)
-      Error_Handler();
-
-    HAL_Delay(5000);
-
-    /* USER CODE BEGIN 3 */
+	  }
   }
-  /* USER CODE END 3 */
+
+  //* test all sector
+	for (i=0; i < SECTORS_COUNT; i++) 
+  {
+		//* init variable
+    for (j=0; j<BUFFER_SIZE; j++) 
+    {
+      wData[j] = (uint8_t)(i + j);
+      rData[j] = 0;
+    }
+    
+    //* erase test
+    if (SectorErase(i*MEMORY_SECTOR_SIZE, (i+1)*MEMORY_SECTOR_SIZE - 1) != LOADER_OK) 
+    {
+		  Error_Handler();
+		}
+
+    //* write test
+	  if (Write((i*MEMORY_SECTOR_SIZE), BUFFER_SIZE, &wData[0]) != LOADER_OK) 
+    {
+		  Error_Handler();
+	  }
+
+    //* read test
+	  if (Read((i*MEMORY_SECTOR_SIZE), BUFFER_SIZE, &rData[0]) != LOADER_OK) 
+    {
+      Error_Handler();
+	  }
+	}
+
+	Verify(0, 0, 1, 0);
+  
+  /* Infinite loop */
+  while (1)
+  {
+  }
 }
 
 /**
