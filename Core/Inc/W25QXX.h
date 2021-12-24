@@ -46,7 +46,7 @@
 /** 
   * @brief  W25Q80 Configuration  
   */  
-#define MEMORY_FLASH_SIZE                  (0x400000 / 8)  /* 4 MBits => 512KB */
+#define MEMORY_FLASH_SIZE                  (0x800000 / 8)  /* 8 MBits => 1024KB */
 #define MEMORY_BLOCK_SIZE                  0x10000   /* 64KBytes */
 #define MEMORY_SECTOR_SIZE                 0x1000    /* 4kBytes */
 #define MEMORY_PAGE_SIZE                   0x100     /* 256 bytes */

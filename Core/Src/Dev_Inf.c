@@ -12,9 +12,9 @@ __root struct StorageInfo const StorageInfo  =  {
 #else
 struct StorageInfo const StorageInfo = {
 #endif
-    "STM32F302R8+W25Q40",               // Device Name + version number
-    NOR_FLASH,                          // Device Type
-    0x90000000,                         // Device Start Address
+    "STM32F302R8+W25Q80",               // Device Name + version number
+    SPI_FLASH,                          // Device Type
+    0x00000000,                         // Device Start Address
     MEMORY_FLASH_SIZE,                  // Device Size in Bytes
     MEMORY_PAGE_SIZE,                   // Programming Page Size
     0xFF,                               // Initial Content of Erased Memory
